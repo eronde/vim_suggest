@@ -1,0 +1,15 @@
+redis:
+  image: redis:2.8
+  command: redis-server --appendonly yes
+  volumes_from:
+    - redis-data
+  ports:
+      - "6379:6379"
+  container_name: vim-bigram-suggest-redis-dev
+
+redis-data:
+  image: "busybox"
+  volumes:
+    - ./redis/data:/data
+  container_name: vim-bigram-suggest-redis-data
+
