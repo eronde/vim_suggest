@@ -122,7 +122,7 @@ class Selector_redis(object):
         if not self.containing(suggestedWords, suggestedWord):
             raise SelectorRedisNoSuggestWordFoundError("Error: suggested word: '{x}' does not exists with basekey '{y}'.".format(x=suggestedWord, y=key))
         if type(score) != int:
-            raise TypeError("Error: '{x}' needs to be an int or a float.")
+            raise TypeError("Error: Score '{x}' needs to be an int or a float.".format(x=score))
         # Update
         self.r.zincrby(key, suggestedWord, score)
 

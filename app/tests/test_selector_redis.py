@@ -132,13 +132,19 @@ class Selector_redisTest(unittest.TestCase):
             obj.increaseScoreSuggestedWord('Hello', 'bobby',  4)
         error = str(e.exception)
         self.assertTrue("Error: suggested word: 'bobby' does not exists with basekey 'Hello'." in error)
-
         # Increase non existing suggested word
         with self.assertRaises(SelectorRedisEmptyValue) as e:
             obj.increaseScoreSuggestedWord('Hello', '', 4)
         error = str(e.exception)
         print(error)
         regex = re.search("^Error in 'increaseScoreSuggestedWord': One of the given arguments .*\, 'Hello', '', 4\)' are empty\.$", error)
+        assert regex is not None
+        # Increase suggested word invalid score
+        with self.assertRaises(TypeError) as e:
+            obj.increaseScoreSuggestedWord('Hello', 'Bob', 'nonvalid')
+        error = str(e.exception)
+        print(error)
+        regex = re.search("^Error: Score 'nonvalid' needs to be an int or a float.$", error)
         assert regex is not None
 
     def test_checkSuggestedWordExists(self):
