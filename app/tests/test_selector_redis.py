@@ -80,7 +80,7 @@ class Selector_redisTest(unittest.TestCase):
         self.assertListEqual(list(obj.gen_suggestWord(*x)), match)
 
     def test_raiseNotConnection(self):
-        """Selector_redis: Raise error if redis server is not connected$
+        """Selector_redis: Raise error if redis server is not connected
         :returns: TODO
         """
         with self.assertRaises(Exception):

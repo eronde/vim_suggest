@@ -17,8 +17,8 @@ class decorationsTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_is_empty(self):
-        """decorations:
+    def test_empty_arguments(self):
+        """decorations: empty_arguments,  Check if args of functions are empty, not kwargs
         :returns: TODO
         """
         # True

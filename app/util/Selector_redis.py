@@ -45,6 +45,7 @@ class Selector_redis(object):
         return True
 
     @_connected
+    @empty_arguments(SelectorRedisEmptyValue)
     def gen_suggestWord(self, *data):
         """gen_suggestWord: Generate decoded suggested word of a data set
         :data: list 
@@ -53,6 +54,7 @@ class Selector_redis(object):
         return (x.decode() for x in data)
 
     @_connected
+    @empty_arguments(SelectorRedisEmptyValue)
     def gen_fetchWords(self, key:str,  withscore=False):
         """gen_fetchWords: Fetch all suggested word of giving key from redis
             Sorted by hightest frequency and alphabetic order
@@ -68,6 +70,7 @@ class Selector_redis(object):
             return (x for x in self.r.zrevrange(key, 0, -1, 'WITHSCORES'))
 
     @_connected
+    @empty_arguments(SelectorRedisEmptyValue)
     def addNewSuggestWord(self, key, word, freq=1):
         """addNewSuggestWord: Adding new suggested word to key
         :key: string
@@ -79,6 +82,7 @@ class Selector_redis(object):
         self.r.zadd(key, word, freq)
 
     @_connected
+    @empty_arguments(SelectorRedisEmptyValue)
     def removeSuggestWord(self, key, word):
         """removeSuggestWord: Remove suggested word from key
         :key: string
@@ -89,6 +93,7 @@ class Selector_redis(object):
         self.r.zrem(key, word)
 
     @_connected
+    @empty_arguments(SelectorRedisEmptyValue)
     def existBaseKey(self, key):
         """existBaseKey: Check if key exists
         :key: string
@@ -121,6 +126,7 @@ class Selector_redis(object):
         # Update
         self.r.zincrby(key, suggestedWord, score)
 
+    @empty_arguments(SelectorRedisEmptyValue)
     def containing(self, collection, targetItem):
         """containing: Checks if a item is or is not in a collection of items
         :items: collection of items
