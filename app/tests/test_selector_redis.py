@@ -24,7 +24,7 @@ class Selector_redisTest(unittest.TestCase):
         obj = Selector_redis(self.redis)
         x = obj.gen_fetchWords('Hello', withscore=True)
         match = [('Bob'.encode(), 10), ('Alice'.encode(), 1)]
-        self.assertListEqual(list(x), match)
+        self.assertListEqual(list(x), match, "Should be [(b'Bob', 10),(b'Alice', 1)]")
 
     def test_fetchSuggestedWordsWithoutScores(self):
         """Selector_redis: Fetch all suggested words of words 'Hello' without scores
@@ -33,7 +33,7 @@ class Selector_redisTest(unittest.TestCase):
         obj = Selector_redis(self.redis)
         x = obj.gen_fetchWords('Hello')
         match = ['Bob'.encode(), 'Alice'.encode()]
-        self.assertListEqual(list(x), match)
+        self.assertListEqual(list(x), match, "Should be ['Bob','Alice']")
 
     def test_getSuggestedWords(self):
         """Selector_redis: Get all suggested words of words 'Hello'
@@ -42,10 +42,10 @@ class Selector_redisTest(unittest.TestCase):
         obj = Selector_redis(self.redis)
         x = self.redis.zrevrange('Hello', 0, -1)
         match = ['Bob', 'Alice']
-        self.assertListEqual(list(obj.gen_suggestWord(*x)), match)
+        self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['Bob','Alice']")
 
     def test_getInvalidKey(self):
-        """Selector_redis: Fetch invalid base key
+        """Selector_redis: Fetch invalid base key[A]
         :returns: TODO
         """
         obj = Selector_redis(self.redis)
@@ -62,11 +62,11 @@ class Selector_redisTest(unittest.TestCase):
         obj = Selector_redis(self.redis)
         match = ['Bob', 'Alice']
         x = self.redis.zrevrange('Hello', 0, -1)
-        self.assertListEqual(list(obj.gen_suggestWord(*x)), match)
+        self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['Bob','Alice']")
         match = ['Bob', 'Max', 'Alice']
         obj.addNewSuggestWord('Hello', 'Max')
         x = self.redis.zrevrange('Hello', 0, -1)
-        self.assertListEqual(list(obj.gen_suggestWord(*x)), match)
+        self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['Bob','Max','Alice']")
 
     def test_removeSuggestedWord(self):
         """Selector_redis: Remove suggested word from 'Hello' key
@@ -77,7 +77,7 @@ class Selector_redisTest(unittest.TestCase):
         match = ['Bob']
         obj.removeSuggestWord('Hello', 'Alice')
         x = self.redis.zrevrange('Hello', 0, -1)
-        self.assertListEqual(list(obj.gen_suggestWord(*x)), match)
+        self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['Alice']")
 
     def test_raiseNotConnection(self):
         """Selector_redis: Raise error if redis server is not connected
@@ -108,17 +108,17 @@ class Selector_redisTest(unittest.TestCase):
         obj.increaseScoreSuggestedWord('Hello', 'Alice')
         scores = obj.gen_fetchWords('Hello', withscore=True)
         match = [('Bob'.encode(), 10),  ('Alice'.encode(), 2)]
-        self.assertListEqual(list(scores), match)
+        self.assertListEqual(list(scores), match, "Should be [(b'Bob', 10),(b'Alice', 2)]")
         # Increase by 4
         obj.increaseScoreSuggestedWord('Hello', 'Alice', 4)
         scores = obj.gen_fetchWords('Hello', withscore=True)
         match = [('Bob'.encode(), 10),  ('Alice'.encode(), 6)]
-        self.assertListEqual(list(scores), match)
+        self.assertListEqual(list(scores), match, "Should be [(b'Bob', 10),(b'Alice', 6)]")
         # Increase by -7
         obj.increaseScoreSuggestedWord('Hello', 'Alice', -7)
         scores = obj.gen_fetchWords('Hello', withscore=True)
         match = [('Bob'.encode(), 10),  ('Alice'.encode(), -1)]
-        self.assertListEqual(list(scores), match)
+        self.assertListEqual(list(scores), match, "Should be [(b'Bob', 10),(b'Alice', -1)]")
         # Increase by string
         with self.assertRaises(TypeError) as e:
             obj.increaseScoreSuggestedWord('Hello', 'Alice', 'l')
@@ -126,26 +126,28 @@ class Selector_redisTest(unittest.TestCase):
         with self.assertRaises(SelectorRedisNoBaseKeyFoundError) as e:
             obj.increaseScoreSuggestedWord('Hel', 'Alice', 4)
         error = str(e.exception)
-        self.assertTrue("Error: key 'Hel' does not exists." in error)
+        pat = "Error: key 'Hel' does not exists."
+        self.assertTrue(pat in error, "'{e} ' should be 'Error: key 'Hel' does not exists.'".format(e=pat))
         # Increase non existing suggested word
         with self.assertRaises(SelectorRedisNoSuggestWordFoundError) as e:
             obj.increaseScoreSuggestedWord('Hello', 'bobby',  4)
         error = str(e.exception)
-        self.assertTrue("Error: suggested word: 'bobby' does not exists with basekey 'Hello'." in error)
+        pat = "Error: suggested word: 'bobby' does not exists with basekey 'Hello'." 
+        self.assertTrue(pat in error, "'{e} ' should be: 'Error: suggested word: 'bobbypat' does not exists with basekey 'Hello.'".format(e=pat))
         # Increase non existing suggested word
         with self.assertRaises(SelectorRedisEmptyValue) as e:
             obj.increaseScoreSuggestedWord('Hello', '', 4)
         error = str(e.exception)
-        print(error)
-        regex = re.search("^Error in 'increaseScoreSuggestedWord': One of the given arguments .*\, 'Hello', '', 4\)' are empty\.$", error)
-        assert regex is not None
+        pat = "^Error in 'increaseScoreSuggestedWord': One of the given arguments .*\, 'Hello', '', 4\)' are empty\.$"
+        regex = re.search(pat, error)
+        assert regex is not None, "'{e} ' should contain:Error in 'increaseScoreSuggestedWord': One of the given arguments , 'Hello', '', 4\)' are empty .format(e=pat)"
         # Increase suggested word invalid score
         with self.assertRaises(TypeError) as e:
             obj.increaseScoreSuggestedWord('Hello', 'Bob', 'nonvalid')
         error = str(e.exception)
-        print(error)
-        regex = re.search("^Error: Score 'nonvalid' needs to be an int or a float.$", error)
-        assert regex is not None
+        pat = "^Error: Score 'nonvalid' needs to be an int or a float.$"
+        regex = re.search(pat, error)
+        assert regex is not None,"'{e}' should contain: Error: Score 'nonvalid' needs to be an int or a float.".format(e=pat)
 
     def test_checkSuggestedWordExists(self):
         """Selector_redis: Check if suggested word exists or not exists
