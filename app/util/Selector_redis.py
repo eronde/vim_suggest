@@ -37,12 +37,23 @@ class Selector_redis(object):
         return wrapper
 
     def is_redis_available(self):
+        """is_redis_available: Check of redis conntion is available
+        :TODO: can not yet test this functiom, coverage  problem
+        :return: Bool
+        """
+        self.redis_running = False
         try:
             self.r.ping()
-        except (r.exceptions.ConnectionError, r.exceptions.BusyLoadingError):
-            print("Can not connect to the redis server. Please start a redis service.")
-            return False
-        return True
+        except AttributeError:
+            raise Exception('l')
+        # except self.r.exceptions.ConnectionError:
+        #     self.redis_running = False
+        # except self.r.exceptions.BusyLoadingError:
+        #     self.redis_running = False
+        # except AttributeError:
+        #     self.redis_running = False
+        else:
+            return True
 
     @_connected
     @empty_arguments(SelectorRedisEmptyValue)
