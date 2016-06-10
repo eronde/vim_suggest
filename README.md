@@ -1,11 +1,10 @@
-[![Build Status](https://travis-ci.org/eronde/vim_suggest.svg?branch=master)](https://travis-ci.org/eronde/vim_suggest)
-Vim-Suggest
+[![Build Status](https://travis-ci.org/eronde/py_word_suggest.svg?branch=master)](https://travis-ci.org/eronde/py_word_suggest)
+Py_word_suggest
 ==============
-Vim-suggest suggests following words of a given word.
 
 # Example
 Not yet working
 
 Licence
 =======
-[MIT](https://github.com/eronde/vim-suggest/blob/master/LICENSE)
+[MIT](https://github.com/eronde/py_word_suggest/blob/master/LICENSE)
