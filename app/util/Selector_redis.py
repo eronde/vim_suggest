@@ -38,7 +38,8 @@ class Selector_redis(object):
 
     def is_redis_available(self):
         """is_redis_available: Check of redis conntion is available
-        :TODO: can not yet test this functiom, coverage  problem
+        :TODO: can not yet test this function, StrictRedis doesn't allow to disconnect
+        a redis connection and coverage  problem
         :return: Bool
         """
         self.redis_running = False
