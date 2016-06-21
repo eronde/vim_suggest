@@ -1,7 +1,7 @@
 import unittest
 import re
-from app.util.utils import *
-
+# from ..util.utils import *
+from py_word_suggest.utils import *
 
 class utilsTest(unittest.TestCase):
     """Docstring for decorationsTest. """

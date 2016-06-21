@@ -10,6 +10,7 @@ function usage {
   exit 0
 }
 #docker rm bigram_suggest_test 2>/dev/null
-#3docker run -it --name bigram_suggest_test --rm -v $(pwd)/:/code bigram_suggest py.test app/tests -vvv
-# docker run -it --name bigram_suggest_test --rm -v $(pwd)/:/code bigram_suggest nosetests app/tests -v
-py.test -vv "$SCRIPT_DIR/app/tests"
+#docker run -it --name py_word_suggest_test --rm -v $(pwd)/:/code py_word_suggest py.test tests
+#docker run -it --name py_word_suggest_test --rm -v $(pwd)/:/code py_word_suggest nosetests tests -v
+py.test -vv "$SCRIPT_DIR//tests"
+# nosetests -vv "$SCRIPT_DIR/app/tests"

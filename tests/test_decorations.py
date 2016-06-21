@@ -1,6 +1,6 @@
 import unittest
 import re
-from app.util.decorators import empty_arguments
+from py_word_suggest.decorators import empty_arguments
 
 @empty_arguments(Exception)
 def _function_with_arg(text, text2):

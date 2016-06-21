@@ -1,4 +1,8 @@
-from app.util.decorators import empty_arguments
+# py_word_suggest/Selector_redis.py
+#from app.util.decorators import empty_arguments
+from .decorators import empty_arguments
+
+from . import export
 class SelectorRedisError(Exception): pass
 
 class SelectorRedisNoBaseKeyFoundError(SelectorRedisError): pass
@@ -7,6 +11,7 @@ class SelectorRedisNoSuggestWordFoundError(SelectorRedisError): pass
 
 class SelectorRedisEmptyValue(SelectorRedisError): pass
 
+@export
 class Selector_redis(object):
     """ Selector_redis. Class for fetching bigram data from redis db
     :Datastructure:
@@ -14,16 +19,14 @@ class Selector_redis(object):
     """
 
     def __init__(self, redis_connection=None):
-        """TODO: check redis_connection """
+        """TODO: check redis_connection and print out REDIS_IP on fail"""
         self.r = redis_connection
         try:
             self.r.ping()
-        except Exception:
+        except ConnectionError as ec:
             raise Exception("Error: Redis server is not connected. {x} must be a redis object.".format(x=redis_connection))
         else:
             self.redis_running = True
-        finally:
-            self.redis_running = False
 
     def _connected(func):
         """_connected: Decoration to check if redis server is connected
