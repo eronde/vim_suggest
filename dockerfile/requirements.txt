@@ -5,3 +5,5 @@ fakeredis==0.7.0
 pytest
 pytest-cov==2.2.1
 wrapt==1.10.8
+tox==2.3.1
+docopt==0.6.2
