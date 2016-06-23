@@ -1,15 +1,15 @@
 redis:
-  image: redis:2.8
+  image: redis:3.0.0
   command: redis-server --appendonly yes
   volumes_from:
     - redis-data
   ports:
       - "6379:6379"
-  container_name: vim-bigram-suggest-redis-dev
+  container_name: py-word-suggest-redis
 
 redis-data:
   image: "busybox"
   volumes:
     - ./redis/data:/data
-  container_name: vim-bigram-suggest-redis-data
+  container_name: py-word-suggest-redis-data
 
