@@ -1,6 +1,6 @@
 redis:
   image: redis:3.0.0
-  command: redis-server --appendonly yes
+  command: redis-server --appendonly no 
   volumes_from:
     - redis-data
   ports:
