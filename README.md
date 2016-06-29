@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/eronde/py_word_suggest.svg?branch=master)](https://travis-ci.org/eronde/py_word_suggest)
 Py_word_suggest
 ==============
-Py_word_suggest is a  python library which returns suggested word of a given word. At this moment tThe suggested words are stored in a redis server.
+Py_word_suggest is a python library which returns suggested words of a given word. At this moment the suggested words are stored in a redis server.
 # Installation
 - Load data in redis server.
 - Install package 
