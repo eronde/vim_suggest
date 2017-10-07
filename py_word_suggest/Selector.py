@@ -31,6 +31,12 @@ class Selector(object):
         self._suggestWords = None
         self._selectedBaseKey = None #B bigram (key) that user selected, -1=current selected
         self._selectedBigram = None#Bigram (Base (value) that user selected
+        self._bigramEntrees = [] #List of tuple: Entree of bigrams who user seelected. 
+        """Tuple:[0]=order of selected bigrams
+           Tuple:[1]=Selected bigrams
+           Tuple:[2]=Index of selected bigrams
+           Tuple:[3]=Selected bigrams exists
+       """
         
         # @empty_arguments(SelectorEmptyValue)
     def get_suggestWord(self,key:str,sort=True):
