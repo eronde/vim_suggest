@@ -29,10 +29,10 @@ class Selector(object):
     def __init__(self, bigrams):
         self.bigrams = bigrams
         self._suggestWords = None
-        self._selectedBaseKey = None #Bigram (key) that user selected
-        self._selectedBigram = None#Bigram (value) that user selected
-
-    # @empty_arguments(SelectorEmptyValue)
+        self._selectedBaseKey = None #B bigram (key) that user selected, -1=current selected
+        self._selectedBigram = None#Bigram (Base (value) that user selected
+        
+        # @empty_arguments(SelectorEmptyValue)
     def get_suggestWord(self,key:str,sort=True):
         """get_suggestWord: Generate suggested word
         :key: string 'lang:{language}:gram:2:{word}'
@@ -47,11 +47,13 @@ class Selector(object):
     def gen_suggestWord(self,key:str,sort=True):
         """gen_suggestWord: Generate suggested word, sorted by hightest frequency
         :key: string 'lang:{language}:gram:2:{word}'
+        :sort: sort by frequency, True=descending, False=ascending
         :return: generator
         """
-        for x in sorted(self.bigrams[key],reverse=sort):
+        for x in sorted(self.bigrams[key], key=lambda w: w[1],reverse=sort):
             yield x[0]
-        return None
+
+        self._suggestWords = None
 
     @empty_arguments(SelectorEmptyValue)
     def set_suggestedWords(self, key:str,**kwargs):
@@ -80,6 +82,20 @@ class Selector(object):
         
 
     @empty_arguments(SelectorEmptyValue)
+    def add_newSuggestedWord(self, word:str):
+        """add_newSuggestedWord: Add new suggest word to object
+        :Todo: Look at exception
+        :return: void 
+        """
+        
+        if self._selectedBigram is None:
+            raise SelectorError("Error: _selectedBigram is None")
+
+        pass
+        # except SelectorError:
+        #     raise SelectorError("Error: word: '{k}' already in bigram object.".format(k=word))
+        
+    @empty_arguments(SelectorEmptyValue)
     def set_bigram(self, baseKey:str):
         """set_bigram: Set bigram (values) of giving baseKey 
         :baseKey: string 'lang:{language}:gram:2:{word}'
@@ -87,10 +103,9 @@ class Selector(object):
         :return: void 
         """
         if not self.existBaseKey(baseKey):
+            self._selectedBigram = None
             raise SelectorNoBaseKeyFoundError("Error: key, '{k}' does not exists.".format(k=baseKey))
-            
         self._selectedBigram = self.bigrams.get(baseKey, None)
-        
 
     def containing(self, collection, targetItem):
         """containing: Checks if a item is or is not in a collection of items
@@ -98,7 +113,10 @@ class Selector(object):
         :targetItem: 
         :returns: bool
         """
-        return targetItem in collection
+        try:
+            return targetItem in collection
+        except TypeError:
+            raise SelectorError("Error: collection is None")
 
     @empty_arguments(SelectorEmptyValue)
     def existBaseKey(self, key):
@@ -106,6 +124,8 @@ class Selector(object):
         :key: collection of items
         :returns: bool
         """
+        if self.bigrams is None:
+            raise SelectorError("Error: Can not search in a None type")
         return key in self.bigrams
 
     

@@ -19,13 +19,29 @@ def test_getsuggestedwords(bigrams):
 #    assert obj.p() == "t"
     assert match == result
 
-@pytest.mark.skip
+#@pytest.mark.skip
 def test_genSuggestedWords(bigrams):
     """Selector: Generate suggested words object"""
-    assert bigrams.selectedSuggestWords == None
-    match = {'want', 'like', 'am'}
+    #Test set
+    assert bigrams._suggestWords == None
+    smatch = {'want', 'like', 'am'}
     bigrams.set_suggestedWords('I')
-    assert bigrams.selectedSuggestWords == match
+   #test empty after list
+    assert set(bigrams._suggestWords) == smatch
+    assert bigrams._suggestWords == None
+    usmatch = {'am','like','want'}
+    bigrams.set_suggestedWords('I',sort=False)
+    assert set(bigrams._suggestWords) == usmatch
+    assert bigrams._suggestWords == None
+    #Test list
+    lmatch = ['want', 'like', 'am']
+    bigrams.set_suggestedWords('I')
+    assert list(bigrams._suggestWords) == lmatch
+    assert bigrams._suggestWords == None
+    ulmatch = ['am','like','want']
+    bigrams.set_suggestedWords('I',sort=False)
+    assert list(bigrams._suggestWords) == ulmatch
+    assert bigrams._suggestWords == None
 
 @pytest.mark.skip
 def test_getSuggestedWords(bigrams):
@@ -34,29 +50,29 @@ def test_getSuggestedWords(bigrams):
     match = {'want', 'like', 'am'}
     bigrams.set_suggestedWords('I')
     assert bigrams._suggestWords == match
-
 def test_setSuggestedWords(bigrams):
     """Selector: Set suggested word genorator to object"""
     #Test set
     assert bigrams._suggestWords == None
     smatch = {'want', 'like', 'am'}
     bigrams.set_suggestedWords('I')
-   #test empty after list
+    #bigrams.add_newSuggestedWord('Test') 
     assert set(bigrams._suggestWords) == smatch
+    assert bigrams._suggestWords == None
     usmatch = {'am','like','want'}
     bigrams.set_suggestedWords('I',sort=False)
     assert set(bigrams._suggestWords) == usmatch
+    assert bigrams._suggestWords == None
     #Test list
     lmatch = ['want', 'like', 'am']
     bigrams.set_suggestedWords('I')
     assert list(bigrams._suggestWords) == lmatch
+    assert bigrams._suggestWords == None
     ulmatch = ['am','like','want']
     bigrams.set_suggestedWords('I',sort=False)
     assert list(bigrams._suggestWords) == ulmatch
-   #test empty after list
+    assert bigrams._suggestWords == None
 
-    # bigrams._selectedBigram = bigrams.set_suggestedWords(bigrams._selectedBaseKey)
-    # listReturnValues =  list(bigrams._)
 def test_setSelectedBigram(bigrams):
     """Selector: Set Suggested bigram (values of basekey) to object"""
     assert bigrams._selectedBigram == None
@@ -78,6 +94,39 @@ def test_setSelectedBaseKey(bigrams):
         bigrams.set_baseKey('NoBaseKey==')
     assert str(e.value) == "Error: key, \'NoBaseKey==\' does not exists." 
 
+@pytest.mark.skip
+def test_addNewsuggestedWord(bigrams):
+    """Selector: Add new suggested word to 'I' key to selected_bigram
+    :returns: TODO
+
+    """
+    bigrams.set_bigram('I')
+    with pytest.raises(SelectorError) as e:
+        bigrams.add_newSuggestedWord('am')
+    assert str(e.value) == "Error: word: 'am' already in bigram object." 
+     
+    # bigramValues = [['am',1],['want', 10], ['like', 5],['test',1 ]]
+    # bigrams.add_newSuggestedWord('test')
+    # assert bigrams._selectedBigram == bigramValues
+
+# @pytest.mark.skip
+def test_addChangesToBigrams(bigrams):
+    """Selector: Add changes to bigram object
+    :returns: TODO
+    """
+    with pytest.raises(SelectorError) as e:
+    # with pytest.raises(SelectorNoBaseKeyFoundError, SelectorError):
+         bigrams.set_bigram('NoKey')
+    assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
+    #assert str(e.value) == "Error: _selectedBigram is None"
+    #assert str(SelectorNoBaseKeyFoundError.value) == "Error: key, \'NoKey\' does not exists." 
+    # bigrams.set_bigram('I')
+    # with pytest.raises(SelectorError) as e:
+    #     bigrams.add_newSuggestedWord('am')
+    # assert str(e.value) == "Error: word: 'am' already in bigram object." 
+    # bigramValues = [['am',1],['want', 10], ['like', 5],['test',1 ]]
+    # bigrams.add_newSuggestedWord('test')
+    # assert bigrams._selectedBigram == bigramValues
 
 def test_checkKeyExist(bigrams):
     """Selector: Check if base 'word' key exists or not exists
@@ -88,6 +137,29 @@ def test_checkKeyExist(bigrams):
     assert exist == True
     notexist = bigrams.existBaseKey('How')
     assert notexist == False
+
+def test_setBigramToObject(bigrams):
+    """Selector: Set bigram values to bigram object
+    :returns: TODO
+    """
+    assert bigrams._selectedBigram == None
+    bigrams.set_bigram('I')
+    bigramValues = [['am',1],['want', 10], ['like', 5]]
+    assert bigrams._selectedBigram == bigramValues
+    
+    with pytest.raises(SelectorNoBaseKeyFoundError) as e:
+        bigrams.set_bigram('NoKey')
+    assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
+    assert bigrams._selectedBigram == None
+
+
+
+
+
+
+
+
+
 # @pytest.fixture
 # def bigram():
 #         data = {'I':[['am',1],['want', 10], ['like', 5]]}
@@ -134,20 +206,6 @@ def test_checkKeyExist(bigrams):
 #         obj.gen_fetchWords('NoBaseKey')
 #     error = str(e.exception)
 #     self.assertTrue("Error: key \', \'NoBaseKey\', \' does not exists." in error)
-
-# def test_addNewsuggestedWord(self):
-#     """Selector: Add new suggested word to 'I' key
-#     :returns: TODO
-
-#     """
-#     obj = Selector(self.redis)
-#     match = ['want', 'am']
-#     x = self.redis.zrevrange('I', 0, -1)
-#     self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['want','am']")
-#     match = ['want', 'Max', 'am']
-#     obj.addNewSuggestWord('I', 'Max')
-#     x = self.redis.zrevrange('I', 0, -1)
-#     self.assertListEqual(list(obj.gen_suggestWord(*x)), match, "Should be ['want','Max','am']")
 
 # def test_removeSuggestedWord(self):
 #     """Selector: Remove suggested word from 'I' key
