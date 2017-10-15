@@ -39,7 +39,7 @@ class Selector(object):
        """
         
         # @empty_arguments(SelectorEmptyValue)
-    def get_suggestWord(self,key:str,sort=True):
+    def get_suggestWord(self,key:str,sort=None):
         """get_suggestWord: Generate suggested word
         :key: string 'lang:{language}:gram:2:{word}'
         :return: generator
@@ -50,13 +50,17 @@ class Selector(object):
         for x in self._selectedBigram:
             yield x[0]
     
-    def gen_suggestWord(self,key:str,sort=True):
+    def gen_suggestWord(self,key:str,sort=None):
         """gen_suggestWord: Generate suggested word, sorted by hightest frequency
         :key: string 'lang:{language}:gram:2:{word}'
-        :sort: sort by frequency, True=descending, False=ascending
+        :sort: sort by frequency, True=descending, False=ascending, None=No sorting
         :return: generator
         """
-        for x in sorted(self.bigrams[key], key=lambda w: w[1],reverse=sort):
+        if type(sort) is bool:
+            sortList = sorted(self.bigrams[key], key=lambda w: w[1],reverse=sort)
+        else:
+           sortList = self.bigrams[key]
+        for x in sortList:
             yield x[0]
 
         self._suggestWords = None

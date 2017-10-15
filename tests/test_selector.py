@@ -35,7 +35,7 @@ def test_genSuggestedWords(bigrams):
     assert bigrams._suggestWords == None
     #Test list
     lmatch = ['want', 'like', 'am']
-    bigrams.set_suggestedWords('I')
+    bigrams.set_suggestedWords('I',sort=True)
     assert list(bigrams._suggestWords) == lmatch
     assert bigrams._suggestWords == None
     ulmatch = ['am','like','want']
@@ -50,6 +50,7 @@ def test_getSuggestedWords(bigrams):
     match = {'want', 'like', 'am'}
     bigrams.set_suggestedWords('I')
     assert bigrams._suggestWords == match
+
 def test_setSuggestedWords(bigrams):
     """Selector: Set suggested word genorator to object"""
     #Test set
@@ -65,12 +66,16 @@ def test_setSuggestedWords(bigrams):
     assert bigrams._suggestWords == None
     #Test list
     lmatch = ['want', 'like', 'am']
-    bigrams.set_suggestedWords('I')
+    bigrams.set_suggestedWords('I',sort=True)
     assert list(bigrams._suggestWords) == lmatch
     assert bigrams._suggestWords == None
     ulmatch = ['am','like','want']
     bigrams.set_suggestedWords('I',sort=False)
     assert list(bigrams._suggestWords) == ulmatch
+    assert bigrams._suggestWords == None
+    noneSorting = ['am', 'want', 'like']
+    bigrams.set_suggestedWords('I',sort=None)
+    assert list(bigrams._suggestWords) == noneSorting
     assert bigrams._suggestWords == None
 
 def test_setSelectedBigram(bigrams):
