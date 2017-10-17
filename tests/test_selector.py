@@ -51,31 +51,17 @@ def test_getSuggestedWords(bigrams):
     bigrams.set_suggestedWords('I')
     assert bigrams._suggestWords == match
 
-def test_setSuggestedWords(bigrams):
-    """Selector: Set suggested word genorator to object"""
-    #Test set
-    assert bigrams._suggestWords == None
-    smatch = {'want', 'like', 'am'}
-    bigrams.set_suggestedWords('I')
-    #bigrams.add_newSuggestedWord('Test') 
-    assert set(bigrams._suggestWords) == smatch
-    assert bigrams._suggestWords == None
-    usmatch = {'am','like','want'}
-    bigrams.set_suggestedWords('I',sort=False)
-    assert set(bigrams._suggestWords) == usmatch
-    assert bigrams._suggestWords == None
-    #Test list
-    lmatch = ['want', 'like', 'am']
-    bigrams.set_suggestedWords('I',sort=True)
-    assert list(bigrams._suggestWords) == lmatch
-    assert bigrams._suggestWords == None
-    ulmatch = ['am','like','want']
-    bigrams.set_suggestedWords('I',sort=False)
-    assert list(bigrams._suggestWords) == ulmatch
-    assert bigrams._suggestWords == None
-    noneSorting = ['am', 'want', 'like']
-    bigrams.set_suggestedWords('I',sort=None)
-    assert list(bigrams._suggestWords) == noneSorting
+@pytest.mark.parametrize("testInput,sortTypeOutput",
+            [
+            (None,['am','want','like']),
+            (True,['want','like','am']),
+            (False,['am','like','want'])
+            ]
+        )
+def test_setSuggestedWords(bigrams, testInput, sortTypeOutput):
+    """Selector: Set list of suggested word to object"""
+    bigrams.set_suggestedWords('I',sort=testInput)
+    assert list(bigrams._suggestWords) == sortTypeOutput
     assert bigrams._suggestWords == None
 
 def test_setSelectedBigram(bigrams):
