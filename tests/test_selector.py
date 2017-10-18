@@ -19,29 +19,19 @@ def test_getsuggestedwords(bigrams):
 #    assert obj.p() == "t"
     assert match == result
 
+@pytest.mark.parametrize("testInput,sortTypeOutput",
+            [
+            (None,['am','want','like']),
+            (True,['want','like','am']),
+            (False,['am','like','want'])
+            ]
+        )
 #@pytest.mark.skip
-def test_genSuggestedWords(bigrams):
+def test_genSuggestedWords(bigrams, testInput, sortTypeOutput):
     """Selector: Generate suggested words object"""
-    #Test set
-    assert bigrams._suggestWords == None
-    smatch = {'want', 'like', 'am'}
-    bigrams.set_suggestedWords('I')
-   #test empty after list
-    assert set(bigrams._suggestWords) == smatch
-    assert bigrams._suggestWords == None
-    usmatch = {'am','like','want'}
-    bigrams.set_suggestedWords('I',sort=False)
-    assert set(bigrams._suggestWords) == usmatch
-    assert bigrams._suggestWords == None
-    #Test list
-    lmatch = ['want', 'like', 'am']
-    bigrams.set_suggestedWords('I',sort=True)
-    assert list(bigrams._suggestWords) == lmatch
-    assert bigrams._suggestWords == None
-    ulmatch = ['am','like','want']
-    bigrams.set_suggestedWords('I',sort=False)
-    assert list(bigrams._suggestWords) == ulmatch
-    assert bigrams._suggestWords == None
+    gen = bigrams.gen_suggestWord('I',sort=testInput)
+    for testValue, generatedValue in zip(gen, sortTypeOutput):
+        assert testValue == generatedValue
 
 @pytest.mark.skip
 def test_getSuggestedWords(bigrams):
