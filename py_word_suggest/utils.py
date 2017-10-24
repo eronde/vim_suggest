@@ -3,9 +3,14 @@ from . import export
 
 @export
 def is_empty(obj):
-    """is_empty: Check if object is empty.
+    """is_empty: Check if str object is empty.
     :obj:
     :returns: Bool
 
     """
-    return obj == '' or str(obj).isspace()
+    if isinstance(obj, str):
+        return not bool(obj.strip() and ' ' not in obj)
+    elif obj is None:
+        return True
+    else:
+        return obj == '' or str(obj).isspace()
