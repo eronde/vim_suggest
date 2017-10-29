@@ -9,7 +9,6 @@ class SelectorEmptyValue(SelectorError): pass
 # Selector to retreive bigram from json or pickle
 #from app.util.decorators import empty_arguments
 from .decorators import empty_arguments
-
 from . import export
 # class SelectorError(Exception): pass
 
@@ -31,12 +30,7 @@ class Selector(object):
         self._suggestWords = None
         self._selectedBaseKey = None #B bigram (key) that user selected, -1=current selected
         self._selectedBigram = None#Bigram (Base (value) that user selected
-        self._bigramEntrees = [] #List of tuple: Entree of bigrams who user seelected. 
-        """Tuple:[0]=order of selected bigrams
-           Tuple:[1]=Selected bigrams
-           Tuple:[2]=Index of selected bigrams
-           Tuple:[3]=Selected bigrams exists
-       """
+        self._lookups = () #tuple, bigrams that user has selected
         
         # @empty_arguments(SelectorEmptyValue)
     def get_suggestWord(self,key:str,sort=None):
@@ -137,6 +131,19 @@ class Selector(object):
         if self.bigrams is None:
             raise SelectorError("Error: Can not search in a None type")
         return key in self.bigrams
+
+#    @empty_arguments(SelectorEmptyValue)
+    def addBigramLookup(self, lookupEntree:str):
+        """addBigramLookup: Add new entree of what user has lookup
+        :blookupEntree string,
+        :Todo: Look at exception
+        :return: void, add to tuple 
+        """
+
+        if isinstance(lookupEntree,str) and not ' ' in lookupEntree:
+            self._lookups = self._lookups + (lookupEntree, )
+        else:
+            raise SelectorNoBaseKeyFoundError("Error: lookupEntree, '{k}' needs to be a string.".format(k=lookupEntree))
 
     
     

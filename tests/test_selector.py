@@ -2,7 +2,7 @@ import re
 import pytest
 from py_word_suggest.Selector import *
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def bigrams():
     b = {'I':[['am',1],['want', 10], ['like', 5]]}
     bigrams = Selector(b)
@@ -56,7 +56,6 @@ def test_setSelectedBaseKey(bigrams):
         bigrams.set_baseKey('NoBaseKey==')
     assert str(e.value) == "Error: key, \'NoBaseKey==\' does not exists." 
 
-     
 def test_checkKeyExist(bigrams):
     """Selector: Check if base 'word' key exists or not exists
     :returns: TODO
@@ -81,4 +80,25 @@ def test_setBigramToObject(bigrams):
     assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
     assert bigrams._selectedBigram == None
 
-
+@pytest.mark.parametrize("testInput,expectedOutput,errorState",
+            [
+                ('I', ('I',), False),
+                ('love', ('I','love'), False),
+                ('Python', ('I','love','Python'), False),
+                (9, "Error: lookupEntree, '9' needs to be a string.", True),
+                ('String with space', "Error: lookupEntree, 'String with space' needs to be a string.", True)
+                ])
+def test_addLookup(bigrams, testInput, expectedOutput, errorState):
+    """Selector: Get bigrams of what the user has lookup
+    :returns: TODO
+        """
+    if  errorState is False:
+        bigrams.addBigramLookup(testInput)
+        assert bigrams._lookups == expectedOutput
+    else:
+        with pytest.raises(SelectorNoBaseKeyFoundError) as e:
+            bigrams.addBigramLookup(testInput)
+            assert str(e.value) == expectedOutput
+# with pytest.raises(SelectorNoBaseKeyFoundError) as e:
+    #     bigrams.addBigramLookup       bigrams.set_bigram('NoKey')
+    # assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
