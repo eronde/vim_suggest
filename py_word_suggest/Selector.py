@@ -145,6 +145,13 @@ class Selector(object):
         else:
             raise SelectorNoBaseKeyFoundError("Error: lookupEntree, '{k}' needs to be a string.".format(k=lookupEntree))
 
+    def getLookup(self):
+        """getLookup: Get entree of what user has lookup
+        :Todo: Look at exception
+        :return: void, add to tuple 
+        """
+
+        return self._lookups
     
     
 #     @empty_arguments(SelectorEmptyValue)

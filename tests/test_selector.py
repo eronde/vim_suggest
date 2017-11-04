@@ -80,6 +80,32 @@ def test_setBigramToObject(bigrams):
     assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
     assert bigrams._selectedBigram == None
 
+@pytest.fixture(scope='function')
+@pytest.mark.parametrize("testInput,expectedOutput",
+            [
+                ('I', ('I',)), 
+                ('love', ('I','love')), 
+                ('Python', ('I','love','Python'))
+                ])
+def test_getLookup(bigrams, testInput, expectedOutput):
+    """Selector: Get bigrams of what the user has lookup
+    :returns: TODO
+        """
+    bigrams.addBigramLookup(testInput)
+    assert bigrams._lookups == expectedOutput
+    
+@pytest.mark.parametrize("testInput,expectedOutput,errorState",
+            [
+                ('I', ('I',), False),
+                ('love', ('I','love'), False),
+                ('Python', ('I','love','Python'), False),
+                (9, "Error: lookupEntree, '9' needs to be a string.", True),
+                ('String with space', "Error: lookupEntree, 'String with space' needs to be a string.", True)
+                ])
+def test_addLookup(bigrams, testInput, expectedOutput, errorState):
+    """Selector: Get bigrams of what the user has lookup
+    :returns: TODO
+        """
 @pytest.mark.parametrize("testInput,expectedOutput,errorState",
             [
                 ('I', ('I',), False),
