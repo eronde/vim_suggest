@@ -22,18 +22,24 @@ def test_genSuggestedWords(bigrams, testInput, sortTypeOutput):
     for testValue, generatedValue in zip(gen, sortTypeOutput):
         assert testValue == generatedValue
 
-@pytest.mark.parametrize("testInput,sortTypeOutput",
+@pytest.mark.parametrize("testInput,sortTypeOutput, errorState",
             [
-            (None,['am','want','like']),
-            (True,['want','like','am']),
-            (False,['am','like','want'])
+            (None,['am','want','like'], False),
+            (True,['want','like','am'], False),
+            (False,['am','like','want'], False),
+            ("Nokey", "Error: key, 'Nokey' does not exists.",True)
             ]
         )
-def test_setSuggestedWords(bigrams, testInput, sortTypeOutput):
+def test_setSuggestedWords(bigrams, testInput, sortTypeOutput, errorState):
     """Selector: Set list of suggested word to object"""
-    bigrams.set_suggestedWords('I',sort=testInput)
-    assert list(bigrams._suggestWords) == sortTypeOutput
-    assert bigrams._suggestWords == None
+    if  errorState is False:
+        bigrams.set_suggestedWords('I',sort=testInput)
+        assert list(bigrams._suggestWords) == sortTypeOutput
+        assert bigrams._suggestWords == None
+    else:
+        with pytest.raises(SelectorNoBaseKeyFoundError) as e:
+            bigrams.set_suggestedWords(testInput,sort=True)
+            assert str(e.value) == sortTypeOutput
 
 def test_setSelectedBigram(bigrams):
     """Selector: Set Suggested bigram (values of basekey) to object"""
@@ -106,18 +112,6 @@ def test_addLookup(bigrams, testInput, expectedOutput, errorState):
     """Selector: Get bigrams of what the user has lookup
     :returns: TODO
         """
-@pytest.mark.parametrize("testInput,expectedOutput,errorState",
-            [
-                ('I', ('I',), False),
-                ('love', ('I','love'), False),
-                ('Python', ('I','love','Python'), False),
-                (9, "Error: lookupEntree, '9' needs to be a string.", True),
-                ('String with space', "Error: lookupEntree, 'String with space' needs to be a string.", True)
-                ])
-def test_addLookup(bigrams, testInput, expectedOutput, errorState):
-    """Selector: Get bigrams of what the user has lookup
-    :returns: TODO
-        """
     if  errorState is False:
         bigrams.addBigramLookup(testInput)
         assert bigrams._lookups == expectedOutput
@@ -125,6 +119,13 @@ def test_addLookup(bigrams, testInput, expectedOutput, errorState):
         with pytest.raises(SelectorNoBaseKeyFoundError) as e:
             bigrams.addBigramLookup(testInput)
             assert str(e.value) == expectedOutput
+            
+def test_getLookup(bigrams):
+    """Selector: Get bigrams of what the user has lookup
+    :returns: TODO
+        """
+    assert bigrams._lookups == ('I', 'love','Python')
+    
 # with pytest.raises(SelectorNoBaseKeyFoundError) as e:
-    #     bigrams.addBigramLookup       bigrams.set_bigram('NoKey')
-    # assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
+#     bigrams.addBigramLookup       bigrams.set_bigram('NoKey')
+# assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
