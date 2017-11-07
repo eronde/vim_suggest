@@ -14,3 +14,15 @@ def is_empty(obj):
         return True
     else:
         return obj == '' or str(obj).isspace()
+
+def containing(collection, targetItem):
+    """containing: Checks if a item is or is not in a collection of items
+    :items: collection of items
+    :targetItem: 
+    :returns: bool
+    """
+    try:
+        return targetItem in collection
+    except TypeError:
+        raise SelectorError("Error: collection is None")
+

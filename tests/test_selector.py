@@ -1,6 +1,7 @@
 import re
 import pytest
 from py_word_suggest.Selector import *
+from py_word_suggest.utils import containing
 
 @pytest.fixture(scope='session')
 def bigrams():
@@ -61,16 +62,6 @@ def test_setSelectedBaseKey(bigrams):
     with pytest.raises(SelectorNoBaseKeyFoundError) as e:
         bigrams.set_baseKey('NoBaseKey==')
     assert str(e.value) == "Error: key, \'NoBaseKey==\' does not exists." 
-
-def test_checkKeyExist(bigrams):
-    """Selector: Check if base 'word' key exists or not exists
-    :returns: TODO
-
-        """
-    exist = bigrams.existBaseKey('I')
-    assert exist == True
-    notexist = bigrams.existBaseKey('How')
-    assert notexist == False
 
 def test_setBigramToObject(bigrams):
     """Selector: Set bigram values to bigram object

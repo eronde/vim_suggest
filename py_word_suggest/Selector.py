@@ -6,13 +6,14 @@ class SelectorNoBaseKeyFoundError(SelectorError): pass
 class SelectorNoSuggestWordFoundError(SelectorError): pass
 
 class SelectorEmptyValue(SelectorError): pass
-# Selector to retreive bigram from json or pickle
+# selector to retreive bigram from json or pickle
 #from app.util.decorators import empty_arguments
 from .decorators import empty_arguments
 from . import export
-# class SelectorError(Exception): pass
+from .utils import containing
+# class selectorerror(exception): pass
 
-# class SelectorNoBaseKeyFoundError(SelectorError): pass
+# class selectornobasekeyfounderror(selectorerror): pass
 
 # class SelectorNoSuggestWordFoundError(SelectorError): pass
 
@@ -67,8 +68,8 @@ class Selector(object):
         :Todo: Look at exception
         :return: void generator type 
         """
-        if not self.existBaseKey(key):
-            raise SelectorNoBaseKeyFoundError("Error: key, '{k}' does not exists.".format(k=key))
+        if not containing(self.bigrams, key):
+           raise SelectorNoBaseKeyFoundError("Error: key, '{k}' does not exists.".format(k=key))
             
         self._suggestWords = self.gen_suggestWord(key, **kwargs)
 
@@ -79,7 +80,7 @@ class Selector(object):
         :Todo: Look at exception
         :return: void 
         """
-        if not self.existBaseKey(baseKey):
+        if not containing(self.bigrams, baseKey):
             raise SelectorNoBaseKeyFoundError("Error: key, '{k}' does not exists.".format(k=baseKey))
             
         self._selectedBaseKey = baseKey
@@ -99,38 +100,17 @@ class Selector(object):
         # except SelectorError:
         #     raise SelectorError("Error: word: '{k}' already in bigram object.".format(k=word))
         
-    @empty_arguments(SelectorEmptyValue)
+    #@empty_arguments(SelectorEmptyValue)
     def set_bigram(self, baseKey:str):
         """set_bigram: Set bigram (values) of giving baseKey 
         :baseKey: string 'lang:{language}:gram:2:{word}'
         :Todo: Look at exception
         :return: void 
         """
-        if not self.existBaseKey(baseKey):
+        if not containing(self.bigrams, baseKey):
             self._selectedBigram = None
             raise SelectorNoBaseKeyFoundError("Error: key, '{k}' does not exists.".format(k=baseKey))
         self._selectedBigram = self.bigrams.get(baseKey, None)
-
-    def containing(self, collection, targetItem):
-        """containing: Checks if a item is or is not in a collection of items
-        :items: collection of items
-        :targetItem: 
-        :returns: bool
-        """
-        try:
-            return targetItem in collection
-        except TypeError:
-            raise SelectorError("Error: collection is None")
-
-    @empty_arguments(SelectorEmptyValue)
-    def existBaseKey(self, key):
-        """existBaseKey: Checks if baseKay exist in bigram collection
-        :key: collection of items
-        :returns: bool
-        """
-        if self.bigrams is None:
-            raise SelectorError("Error: Can not search in a None type")
-        return key in self.bigrams
 
 #    @empty_arguments(SelectorEmptyValue)
     def addBigramLookup(self, lookupEntree:str):
@@ -152,6 +132,7 @@ class Selector(object):
         """
 
         return self._lookups
+
     
     
 #     @empty_arguments(SelectorEmptyValue)
@@ -176,8 +157,8 @@ class Selector(object):
 #         self.r.zrem(key, word)
 
 #     @empty_arguments(SelectorEmptyValue)
-#     def existBaseKey(self, key):
-#         """existBaseKey: Check if key exists
+#     def containing(self, key):
+#         """containing: Check if key exists
 #         :key: string
 #         :returns: bool
 
