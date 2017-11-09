@@ -34,16 +34,15 @@ class Selector(object):
         self._lookups = () #tuple, bigrams that user has selected
         
         # @empty_arguments(SelectorEmptyValue)
-    def get_suggestWord(self,key:str,sort=None):
-        """get_suggestWord: Generate suggested word
-        :key: string 'lang:{language}:gram:2:{word}'
-        :return: generator
-        """
-        
-        # Set _selectedBaseKey
-        self.set_bigram(key,reverse=sort)
-        for x in self._selectedBigram:
-            yield x[0]
+    # def get_suggestWord(self,key:str,sort=None):
+    #     """get_suggestWord: Generate suggested word
+    #     :key: string 'lang:{language}:gram:2:{word}'
+    #     :return: generator
+    #     """
+    #     # Set _selectedBaseKey
+    #     self.set_bigram(key,reverse=sort)
+    #     for x in self._selectedBigram:
+    #         yield x[0]
     
     def gen_suggestWord(self,key:str,sort=None):
         """gen_suggestWord: Generate suggested word, sorted by hightest frequency
@@ -86,19 +85,6 @@ class Selector(object):
         self._selectedBaseKey = baseKey
         
 
-    @empty_arguments(SelectorEmptyValue)
-    def add_newSuggestedWord(self, word:str):
-        """add_newSuggestedWord: Add new suggest word to object
-        :Todo: Look at exception
-        :return: void 
-        """
-        
-        if self._selectedBigram is None:
-            raise SelectorError("Error: _selectedBigram is None")
-
-        pass
-        # except SelectorError:
-        #     raise SelectorError("Error: word: '{k}' already in bigram object.".format(k=word))
         
     #@empty_arguments(SelectorEmptyValue)
     def set_bigram(self, baseKey:str):
@@ -130,7 +116,6 @@ class Selector(object):
         :Todo: Look at exception
         :return: void, add to tuple 
         """
-
         return self._lookups
 
     
