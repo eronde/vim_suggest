@@ -115,7 +115,7 @@ def test_getLookup(bigrams):
     """Selector: Get bigrams of what the user has lookup
     :returns: TODO
         """
-    assert bigrams._lookups == ('I', 'love','Python')
+    assert bigrams.getLookup() == ('I', 'love','Python')
     
 # with pytest.raises(SelectorNoBaseKeyFoundError) as e:
 #     bigrams.addBigramLookup       bigrams.set_bigram('NoKey')
