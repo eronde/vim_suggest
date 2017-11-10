@@ -1,4 +1,3 @@
-import re
 import pytest
 from py_word_suggest.Selector import *
 from py_word_suggest.utils import containing
@@ -16,7 +15,6 @@ def bigrams():
             (False,['am','like','want'])
             ]
         )
-
 def test_genSuggestedWords(bigrams, testInput, sortTypeOutput):
     """Selector: Generate suggested words object"""
     gen = bigrams.gen_suggestWord('I',sort=testInput)
@@ -65,8 +63,7 @@ def test_setSelectedBaseKey(bigrams):
 
 def test_setBigramToObject(bigrams):
     """Selector: Set bigram values to bigram object
-    :returns: TODO
-    """
+        """
     assert bigrams._selectedBigram == None
     bigrams.set_bigram('I')
     bigramValues = [['am',1],['want', 10], ['like', 5]]
@@ -86,8 +83,7 @@ def test_setBigramToObject(bigrams):
                 ])
 def test_getLookup(bigrams, testInput, expectedOutput):
     """Selector: Get bigrams of what the user has lookup
-    :returns: TODO
-        """
+            """
     bigrams.addBigramLookup(testInput)
     assert bigrams._lookups == expectedOutput
     
@@ -101,8 +97,7 @@ def test_getLookup(bigrams, testInput, expectedOutput):
                 ])
 def test_addLookup(bigrams, testInput, expectedOutput, errorState):
     """Selector: Get bigrams of what the user has lookup
-    :returns: TODO
-        """
+            """
     if  errorState is False:
         bigrams.addBigramLookup(testInput)
         assert bigrams._lookups == expectedOutput
@@ -113,10 +108,5 @@ def test_addLookup(bigrams, testInput, expectedOutput, errorState):
             
 def test_getLookup(bigrams):
     """Selector: Get bigrams of what the user has lookup
-    :returns: TODO
         """
     assert bigrams.getLookup() == ('I', 'love','Python')
-    
-# with pytest.raises(SelectorNoBaseKeyFoundError) as e:
-#     bigrams.addBigramLookup       bigrams.set_bigram('NoKey')
-# assert str(e.value) == "Error: key, \'NoKey\' does not exists." 
