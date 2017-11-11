@@ -1,4 +1,5 @@
 # py_word_suggest/utils.py
+class utilsError(Exception): pass
 from . import export
 
 @export
@@ -21,10 +22,10 @@ def containing(collection, targetItem):
     :targetItem: 
     :returns: bool
     """
-    try:
+    if is_iterable(collection) and not isinstance(collection,str):
         return targetItem in collection
-    except TypeError:
-        raise SelectorError("Error: collection is None")
+    else:
+        raise utilsError("Error: collection is not iterable or is a string")
 
 def is_iterable(obj):
     """is_empty: Check if object is iterable.
@@ -35,3 +36,4 @@ def is_iterable(obj):
         return bool(iter(obj))
     except TypeError as e:
         return False
+
