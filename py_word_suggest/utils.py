@@ -26,3 +26,12 @@ def containing(collection, targetItem):
     except TypeError:
         raise SelectorError("Error: collection is None")
 
+def is_iterable(obj):
+    """is_empty: Check if object is iterable.
+    :obj:
+    :returns: Bool
+    """
+    try:
+        return bool(iter(obj))
+    except TypeError as e:
+        return False

@@ -10,7 +10,19 @@ import pytest
        ]
         )
 def test_is_empty(testInput,expected_output):
-    """utils, is_empty: Check if an object is empty or contains spaces
-    :returns: TODO
-    """
+    """utils, is_empty: Check if an object is empty or contains spaces"""
     assert is_empty(testInput) == expected_output
+
+@pytest.mark.parametrize("testInput,expectedOutput",
+            [
+            ("String", True),
+            (['lol,lol2'], True),
+            (('lol','lol2'), True),
+            ({'lol','lol2'}, True),
+            (10, False),
+            (None, False)
+            ]
+        )
+def test_is_iterable(testInput,expectedOutput):
+    """utils, is_iterable Check if an object is iterable"""
+    assert is_iterable(testInput) == expectedOutput
