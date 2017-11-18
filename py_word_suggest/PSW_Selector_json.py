@@ -1,4 +1,4 @@
-# py_word_suggest/Selector_redis.py 
+# py_word_suggest/PSW_Selector_json.py
 class SelectorError(Exception): pass
 
 class SelectorNoBaseKeyFoundError(SelectorError): pass
@@ -11,8 +11,8 @@ from . import export
 from .utils import containing
 
 @export
-class Selector(object):
-    """ Selector. Class to retreive bigram from json or pickle    
+class PWS_selector_json(object):
+    """ PWS_selector_json. Class to retreive bigram from json     
     :Datastructure:
             dictionary: key:value(listOflist, 'lang:<language>:gram:2:<word>':[[<word>,<freq score>]]
     """

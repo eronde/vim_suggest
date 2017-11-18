@@ -5,7 +5,7 @@ from py_word_suggest.utils import containing
 @pytest.fixture(scope='session')
 def bigrams():
     b = {'I':[['am',1],['want', 10], ['like', 5]]}
-    bigrams = Selector(b)
+    bigrams = PWS_selector_json(b)
     return bigrams
 
 @pytest.mark.parametrize("testInput,sortTypeOutput",
