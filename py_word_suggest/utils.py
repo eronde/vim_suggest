@@ -1,5 +1,6 @@
 # py_word_suggest/utils.py
 class utilsError(Exception): pass
+from json import dump,load
 from . import export
 
 @export
@@ -36,4 +37,15 @@ def is_iterable(obj):
         return bool(iter(obj))
     except TypeError as e:
         return False
+
+def load_data_from_json(filename):
+    """load_data_from_json: Load data from json file 
+    :obj:
+    :returns: data structure
+    """
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            return load(f)
+    except Exception as e:
+        print(e)
 
