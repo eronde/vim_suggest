@@ -1,5 +1,5 @@
 import pytest
-from py_word_suggest.PSW_Selector_json import *
+from py_word_suggest.PWS_Selector_json import *
 from py_word_suggest.utils import containing
 
 @pytest.fixture(scope='session')
