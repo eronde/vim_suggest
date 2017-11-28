@@ -25,14 +25,13 @@ python3 examples/commandline.py lookup --lang=en --word=am --ip=localhost
 ['the', 'Alice', 'Bob']   
 ````
 Json:
-'''
+````
 python3 examples/example_json.py lookup --lang=nl --word=Ik -f examples/example.json
 'Ik' has the following suggested words:
 
 ['heb', 'ben', 'denk', 'wil', 'weet', 'kan', 'hoop', 'was', 'geef', 'doe', 'vind', 'had', 'zal', 'zoek', 'voel', 'verwacht', 'moet', 'zou', 'zie', 'wilde', 'werk', 'probeerde', 'moest', 'kreeg', 'kon', 'ken', 'ga', 'zit', 'zeg', 'zat', 'wou', 'wist', 'vraag', 'scoorde', 'neem', 'leg', 'kom', 'hou', 'hoor', 'geloof', 'dacht', 'blijf', 'word', 'won', 'werd', 'wees', 'vroeg', 'vreesde', 'vrees', 'verzamel', 'vervul', 'trek', 'stel', 'stap', 'sta', 'spreek', 'sliep', 'schrok', 'rij', 'probeer', 'praat', 'pas', 'overdrijf', 'na', 'mik', 'meen', 'mag', 'maakte', 'maak', 'luister', 'loop', 'lijk', 'leef', 'kwam', 'keerde', 'juich', 'hing', 'herinner', 'grapte', 'ging', 'erken', 'communiceer', 'beleef', 'begrijp', 'bang', 'acht']
 
-'''
-
+````
 
 Licence
 =======
