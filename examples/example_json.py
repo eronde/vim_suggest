@@ -9,6 +9,7 @@ Options:
   --lang=<lang>         Language of suggested word.
   --word=<preword>      Pre-word of suggested word.
   -f file               Json file (Default ./examples/example.json)
+=======
 """
 from py_word_suggest.PWS_Selector_json import *
 from py_word_suggest.utils import load_data_from_json
