@@ -1,5 +1,51 @@
 from py_word_suggest.utils import *
 import pytest 
+
+raw_json = """
+{\n"lang:nl:0:ben":[["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]],\n"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n"lang:eng:0:I":[["am", 100], ["want", 246], ["love", 999]],\n"lang:eng:0:am":[["the",100], ["Alice", 50],["Bob", 45]]\n}\n
+"""
+
+
+@pytest.fixture(scope="session")
+def raw_json_file(tmpdir_factory):
+    f = tmpdir_factory.mktemp("data_tmp").join("test.json")
+
+    f.write(raw_json)
+    return f
+
+
+@pytest.mark.parametrize("testInput, expectedOutput, stripl, stripr, state",
+            [
+                ('lang:nl:0:Ik' ,b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n',b'', b'','normalState'),
+                ('lang:nl:0:Ik' ,b'lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]',b'"', b',\n','normalState'),
+                ('lang:nl:0:Ik' ,b'lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n',b'"', b'','normalState'),
+                ('NO-MATCH',False,False,False,'normalState'),
+                ('NOEXISTINGFILE', "Error, grep_bigram_from_system: grep NOEXISTINGFILE: No such file or dictionary\n" , b'', b'','errorState'),
+                ('lang:nl:0:Ik' ,b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]',b'"', b',\n','defaultArguments'),
+                ('lang:nl:0:Ik',"Error, grep_bigram_from_system: 'String_lstrip' needs to be a bytes type" , 'String_lstrip', b'','argErrorState'),
+                ('lang:nl:0:Ik',"Error, grep_bigram_from_system: 'String_rstrip' needs to be a bytes type" , b'','String_rstrip','argErrorState'),
+            ]
+        )
+def test_grep_bigram(raw_json_file,testInput, stripl, stripr, expectedOutput, state):
+    """utils, Grep bigram from file with system grep""" 
+    #Test default argument
+    if state == 'defaultArguments':
+        assert grep_bigram_from_system(testInput,raw_json_file) == expectedOutput
+    #Test normal behavior  
+    if state == 'normalState':
+        assert grep_bigram_from_system(testInput,raw_json_file, stripl, stripr) == expectedOutput
+        
+    #Test expect error  
+    if state == 'errorState':
+        with pytest.raises(utilsError) as e:
+            grep_bigram_from_system(testInput, testInput)
+            assert str(e.value) == expectedOutput
+
+    #Test expect error  
+    if state == 'argErrorState':
+        with pytest.raises(utilsError) as e:
+            grep_bigram_from_system(testInput, raw_json_file, stripl, stripr)
+            assert str(e.value) == expectedOutput
 @pytest.mark.parametrize("testInput,expected_output",
         [
             ('', True),
@@ -30,12 +76,12 @@ def test_is_iterable(testInput,expectedOutput):
 @pytest.mark.parametrize("testInput, collection, expectedOutput, errorState",
             [
             ('Love',['I', 'Love', 'python'], True, False),
-            ('love',['I', 'Love', 'python'], False, False),
+            ('love',['I', 'Love', 'python'],False, False),
             ('',['I', 'Love', 'python'], False, False),
             (None,['I', 'Love', 'python'], False, False),
             (None,"String", "Error: collection is not iterable or is a string", True),
             ('Love',8, "Error: collection is not iterable or is a string", True),
-            ('Love',None, "Error: collection is not iterable or is a string", True),
+            ('Love',None, "Error: collection is not iterable or is a string",True),
             ]
         )
 def test_containing(testInput, collection,  expectedOutput, errorState):

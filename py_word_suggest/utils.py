@@ -2,6 +2,7 @@
 class utilsError(Exception): pass
 from json import dump,load
 from . import export
+from subprocess import PIPE, Popen
 
 @export
 def is_empty(obj):
@@ -49,3 +50,31 @@ def load_data_from_json(filename):
     except Exception as e:
         print(e)
 
+def grep_bigram_from_system(pattern, filename, stripl=b'', stripr=b',\n'):
+    """grep_bigram_from_system: Check if pattern exists in a file, using gnu_grep
+    :pattern: str, pattern to find 
+    :filename: file
+    :stripl: bytes, strip output starting at the left
+    :stripr: bytes, strip output starting at the right
+    :returns: str/exception/False
+
+    """
+    grep = Popen(['grep', pattern, filename], stdout=PIPE, stderr=PIPE)
+    pat, err = grep.communicate()
+    #Return if pattern not exists
+    if len(err) is 0 and len(pat) is 0:
+        return False
+   #Return error if grep produces an error 
+    if len(err) is not 0:
+        raise utilsError("Error, grep_bigram_from_system: {}".format(err))
+
+    #Strip output of grep
+    if isinstance(stripl, bytes):
+        pat = pat.lstrip(stripl)
+    else:
+        raise utilsError("Error, grep_bigram_from_system: {} needs to be a bytes type".format(stripl))
+    if isinstance(stripr, bytes):
+        pat = pat.rstrip(stripr)
+    else:
+        raise utilsError("Error, grep_bigram_from_system: '{}' needs to be a bytes type".format(stripr))
+    return pat
