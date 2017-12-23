@@ -1,6 +1,6 @@
 # py_word_suggest/utils.py
 class utilsError(Exception): pass
-from json import dump,load
+from json import dump, load, loads
 from . import export
 from subprocess import PIPE, Popen
 
@@ -42,7 +42,7 @@ def is_iterable(obj):
 def load_data_from_json(filename):
     """load_data_from_json: Load data from json file 
     :obj:
-    :returns: data structure
+    :returns: dict
     """
     try:
         with open(filename, 'r', encoding='utf-8') as f:
@@ -78,3 +78,32 @@ def grep_bigram_from_system(pattern, filename, stripl=b'', stripr=b',\n'):
     else:
         raise utilsError("Error, grep_bigram_from_system: '{}' needs to be a bytes type".format(stripr))
     return pat
+
+def load_json_string(jsonString):
+    """load_json_string: Load json  object from string
+    :jsonString, str, bytes
+    :returns: dict
+    """
+    #Check if jsonString bytes is set between braces
+    if isinstance(jsonString, bytes):
+        if not jsonString.endswith(b'}'):
+            jsonString = jsonString + b'}'
+        else: pass
+        if not jsonString.startswith(b'{'):
+            jsonString = b'{' + jsonString
+        else:pass
+    else:pass
+    #Check if jsonString str is set between braces
+    if isinstance(jsonString, str):
+        if not jsonString.endswith('}'):
+            jsonString = jsonString + '}'
+        else: pass
+        if not jsonString.startswith('{'):
+            jsonString = '{' + jsonString
+        else:pass
+    else:pass
+
+    if isinstance(jsonString, str) or isinstance(jsonString, bytes):
+        return loads(jsonString)
+    else:
+        raise utilsError("Error load_json_string, jsonString, '{}' needs to be a string.".format(jsonString))

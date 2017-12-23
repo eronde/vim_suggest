@@ -13,6 +13,28 @@ def raw_json_file(tmpdir_factory):
     f.write(raw_json)
     return f
 
+@pytest.mark.parametrize("testInput, expectedOutput, state",
+            [
+                (b'{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                ('{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                (b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                ('"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                (b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                ('"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                (0, "Error load_json_string, jsonString, '0' needs to be a string.", 'errorState'),
+            ]
+        )
+def test_load_json_from_string(testInput, expectedOutput, state):
+    """utils, Json from string""" 
+    #Test normal behavior  
+    if state == 'normalState':
+        assert load_json_string(testInput) == expectedOutput
+        
+    #Test expect error  
+    if state == 'errorState':
+        with pytest.raises(utilsError) as e:
+            load_json_string(testInput)
+            assert str(e.value) == expectedOutput
 
 @pytest.mark.parametrize("testInput, expectedOutput, stripl, stripr, state",
             [
@@ -46,6 +68,7 @@ def test_grep_bigram(raw_json_file,testInput, stripl, stripr, expectedOutput, st
         with pytest.raises(utilsError) as e:
             grep_bigram_from_system(testInput, raw_json_file, stripl, stripr)
             assert str(e.value) == expectedOutput
+            
 @pytest.mark.parametrize("testInput,expected_output",
         [
             ('', True),
