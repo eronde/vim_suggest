@@ -81,29 +81,30 @@ def grep_bigram_from_system(pattern, filename, stripl=b'', stripr=b',\n'):
 
 def load_json_string(jsonString):
     """load_json_string: Load json  object from string
-    :jsonString, str, bytes
+    :jsonString: str/bytes, string represetation of a json object, like {"key":"value"}. A str item needs to be set between double quotes 
     :returns: dict
     """
-    #Check if jsonString bytes is set between braces
+    hasBraces = 0 
     if isinstance(jsonString, bytes):
-        if not jsonString.endswith(b'}'):
-            jsonString = jsonString + b'}'
-        else: pass
-        if not jsonString.startswith(b'{'):
-            jsonString = b'{' + jsonString
-        else:pass
-    else:pass
+        if jsonString.endswith(b'}') and jsonString.startswith(b'{'):
+            hasBraces = 1
+        # else:pass
+    # else:pass
     #Check if jsonString str is set between braces
     if isinstance(jsonString, str):
-        if not jsonString.endswith('}'):
-            jsonString = jsonString + '}'
-        else: pass
-        if not jsonString.startswith('{'):
-            jsonString = '{' + jsonString
-        else:pass
-    else:pass
+        if jsonString.endswith('}') and jsonString.startswith('{'):
+            hasBraces = 1
+        # else:pass
+    # else:pass
 
-    if isinstance(jsonString, str) or isinstance(jsonString, bytes):
+    if not hasBraces:
+            raise utilsError("Error load_json_string, jsonString, '{k}' needs to be string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.".format(k=jsonString))
+    # else:pass 
+    
+    if not isinstance(jsonString, str) and not isinstance(jsonString, bytes):
+        raise utilsError("Error load_json_string, jsonString, '{}' needs to be a string.".format(jsonString))                   
+    # else:pass
+    try:
         return loads(jsonString)
-    else:
-        raise utilsError("Error load_json_string, jsonString, '{}' needs to be a string.".format(jsonString))
+    except Exception as e:
+            raise utilsError("Error load_json_string, jsonString, '{k}' needs to be string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.".format(k=jsonString))

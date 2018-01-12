@@ -2,7 +2,7 @@ from py_word_suggest.utils import *
 import pytest 
 
 raw_json = """
-{\n"lang:nl:0:ben":[["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]],\n"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n"lang:eng:0:I":[["am", 100], ["want", 246], ["love", 999]],\n"lang:eng:0:am":[["the",100], ["Alice", 50],["Bob", 45]]\n}\n
+{"lang:nl:0:ben":[["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]],\n"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n"lang:eng:0:I":[["am", 100], ["want", 246], ["love", 999]],\n"lang:eng:0:am":[["the",100], ["Alice", 50],["Bob", 45]]\n}\n
 """
 
 
@@ -17,10 +17,9 @@ def raw_json_file(tmpdir_factory):
             [
                 (b'{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
                 ('{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
-                (b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
-                ('"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
-                (b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
-                ('"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
+                ('"lang:nl"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
+                (b'"lang:nl"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
+                (b'\'lang\':0"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
                 (0, "Error load_json_string, jsonString, '0' needs to be a string.", 'errorState'),
             ]
         )
