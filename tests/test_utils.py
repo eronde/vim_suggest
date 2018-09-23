@@ -1,8 +1,12 @@
 from py_word_suggest.utils import *
 import pytest 
-
+# import pudb
 raw_json = """
-{"lang:nl:0:ben":[["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]],\n"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n"lang:eng:0:I":[["am", 100], ["want", 246], ["love", 999]],\n"lang:eng:0:am":[["the",100], ["Alice", 50],["Bob", 45]]\n}\n
+{"lang:nl:0:ben":[["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]],"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],
+"lang:eng:0:I":
+[["am", 100], ["want", 246], ["love", 999]],
+"lang:eng:0:am":
+[["the",100], ["Alice", 50],["Bob", 45]]}
 """
 
 
@@ -17,10 +21,10 @@ def raw_json_file(tmpdir_factory):
             [
                 (b'{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
                 ('{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}', {'lang:nl:0:Ik':[['heb', 66.0], ['ben', 52.0], ['denk', 15.0], ['wil', 13.0], ['acht', 1.0]]}, 'normalState'),
-                ('"lang:nl"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
-                (b'"lang:nl"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
-                (b'\'lang\':0"', "Error load_json_string, jsonString, \'lang:nl\' needs to be string represetation of a json object, jsonString needs to be set between braces.  A str item needs to be set between double quotes.", 'errorState'),
-                (0, "Error load_json_string, jsonString, '0' needs to be a string.", 'errorState'),
+                ('"lang:nl"', "Error load_json_string, jsonString, '\"lang:nl\"' needs to be a string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.", 'errorState'),
+                (b'"lang:nl"', "Error load_json_string, jsonString, 'b'\"lang:nl\"'' needs to be a string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.", 'errorState'),
+               (b'\'lang\':0"', "Error load_json_string, jsonString, 'b'\\'lang\\':0\"'' needs to be a string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.", 'errorState'),
+                (0, "Error load_json_string, jsonString, '0' needs to be a string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.", 'errorState'),
             ]
         )
 def test_load_json_from_string(testInput, expectedOutput, state):
@@ -33,41 +37,42 @@ def test_load_json_from_string(testInput, expectedOutput, state):
     if state == 'errorState':
         with pytest.raises(utilsError) as e:
             load_json_string(testInput)
-            assert str(e.value) == expectedOutput
+        assert str(e.value) == expectedOutput
 
-@pytest.mark.parametrize("testInput, expectedOutput, stripl, stripr, state",
+@pytest.mark.parametrize("testInput, expectedOutput, state",
             [
-                ('lang:nl:0:Ik' ,b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n',b'', b'','normalState'),
-                ('lang:nl:0:Ik' ,b'lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]',b'"', b',\n','normalState'),
-                ('lang:nl:0:Ik' ,b'lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]],\n',b'"', b'','normalState'),
-                ('NO-MATCH',False,False,False,'normalState'),
-                ('NOEXISTINGFILE', "Error, grep_bigram_from_system: grep NOEXISTINGFILE: No such file or dictionary\n" , b'', b'','errorState'),
-                ('lang:nl:0:Ik' ,b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]',b'"', b',\n','defaultArguments'),
-                ('lang:nl:0:Ik',"Error, grep_bigram_from_system: 'String_lstrip' needs to be a bytes type" , 'String_lstrip', b'','argErrorState'),
-                ('lang:nl:0:Ik',"Error, grep_bigram_from_system: 'String_rstrip' needs to be a bytes type" , b'','String_rstrip','argErrorState'),
+                ('\"lang:nl:0:Ik\"' ,{"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]}, 'normalState'),
+                ('\"lang:nl:0:Ik' ,"Error, grep_jsonstring_from_system: '\"lang:nl:0:Ik' needs to be a str type and need to be between double quotes.",'errorState'),
+                ('lang:nl:0:Ik\"' ,"Error, grep_jsonstring_from_system: 'lang:nl:0:Ik\"' needs to be a str type and need to be between double quotes.",'errorState'),
+                ('lang:nl:0:Ik' ,"Error, grep_jsonstring_from_system: 'lang:nl:0:Ik' needs to be a str type and need to be between double quotes.",'errorState'),
+                (0 ,"Error, grep_jsonstring_from_system: '0' needs to be a str type and need to be between double quotes.",'errorState'),
+                ('\"NoKeyFound\"' ,False,'normalState'),
+                
+                ('\"NO-MATCH\"', False, 'normalState'),
+                ('\"NOEXISTINGFILE\"', "Error, grep_jsonstring_from_system: File NOEXISTINGFILE not exists or is busy.",'fileError'),
+                # ('lang:nl:0:Ik' ,b'"lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], ["wil", 13.0], ["acht", 1.0]]','":.*]]','defaultArguments'),
             ]
         )
-def test_grep_bigram(raw_json_file,testInput, stripl, stripr, expectedOutput, state):
-    """utils, Grep bigram from file with system grep""" 
+def test_grep_jsonstring_from_system(raw_json_file,testInput, expectedOutput, state):
+    """utils, Grep bigram from file with system jq util""" 
     #Test default argument
-    if state == 'defaultArguments':
-        assert grep_bigram_from_system(testInput,raw_json_file) == expectedOutput
+    if state == 'fileError':
+        raw_json_file = 'NOEXISTINGFILE'
+        with pytest.raises(utilsError) as e:
+            grep_jsonstring_from_system(testInput, raw_json_file)
+        assert str(e.value) == expectedOutput
     #Test normal behavior  
     if state == 'normalState':
-        assert grep_bigram_from_system(testInput,raw_json_file, stripl, stripr) == expectedOutput
+       assert grep_jsonstring_from_system(testInput,raw_json_file) == expectedOutput
         
     #Test expect error  
     if state == 'errorState':
+        # pudb.set_trace()
         with pytest.raises(utilsError) as e:
-            grep_bigram_from_system(testInput, testInput)
-            assert str(e.value) == expectedOutput
-
-    #Test expect error  
-    if state == 'argErrorState':
-        with pytest.raises(utilsError) as e:
-            grep_bigram_from_system(testInput, raw_json_file, stripl, stripr)
-            assert str(e.value) == expectedOutput
-            
+            grep_jsonstring_from_system(testInput, raw_json_file)
+            # pudb.set_trace()
+        assert str(e.value) == expectedOutput
+           
 @pytest.mark.parametrize("testInput,expected_output",
         [
             ('', True),
@@ -102,10 +107,9 @@ def test_is_iterable(testInput,expectedOutput):
             ('',['I', 'Love', 'python'], False, False),
             (None,['I', 'Love', 'python'], False, False),
             (None,"String", "Error: collection is not iterable or is a string", True),
-            ('Love',8, "Error: collection is not iterable or is a string", True),
-            ('Love',None, "Error: collection is not iterable or is a string",True),
+            ('Love',8, "Error: collection is not iterable or is a string", True),('Love',None, "Error: collection is not iterable or is a string",True),
             ]
-        )
+            )
 def test_containing(testInput, collection,  expectedOutput, errorState):
     """utils: Check if collection contains an item"""
     if  errorState is False:
@@ -113,4 +117,4 @@ def test_containing(testInput, collection,  expectedOutput, errorState):
     else:
         with pytest.raises(utilsError) as e:
             containing(collection, testInput)
-            assert str(e.value) == expectedOutput
+        assert str(e.value) == expectedOutput
