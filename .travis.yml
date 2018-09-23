@@ -8,4 +8,4 @@ sudo: false
  install: "pip install -r dockerfile/requirements.txt"
 # command to run tests
 script: 
-   - bash run_tests.sh
+  - bash run_tests.sh
