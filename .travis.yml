@@ -5,6 +5,6 @@ python:
 #   - docker
 sudo: false
 # command to install dependencies
- install: "pip install -r dockerfile/requirements.txt"
+install: "pip install -r dockerfile/requirements.txt"
 # command to run tests
-script: ./run_tests.sh
+script: bash ./run_tests.sh
