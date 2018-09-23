@@ -1,9 +1,12 @@
 language: python
-python:
-  - "3.5"
-
+# python:
+#   - "3.5"
+services: 
+  - docker
 sudo: false
 # command to install dependencies
-install: "pip install -r dockerfile/requirements.txt"
+# install: "pip install -r dockerfile/requirements.txt"
 # command to run tests
-script: bash ./run_tests.sh
+script: 
+   - make pytest
+

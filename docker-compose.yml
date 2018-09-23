@@ -1,15 +1,16 @@
-redis:
-  image: redis:3.0.0
-  command: redis-server --appendonly no 
-  volumes_from:
-    - redis-data
-  ports:
-      - "6379:6379"
-  container_name: py-word-suggest-redis
-
-redis-data:
-  image: "busybox"
-  volumes:
-    - ./redis/data:/data
-  container_name: py-word-suggest-redis-data
-
+version: '3'
+services:
+  python366:
+    container_name: PWS_py366
+    image: eronde/pws
+    # build: 
+    #   context: ./python366
+    environment:
+      ENV: SHELL
+    # tty: true
+    volumes:
+      - ${PWD}/tests:/code/tests
+      - ${PWD}/py_word_suggest:/code/py_word_suggest
+      - ${PWD}/pytest.ini:/code/pytest.ini
+      - ${PWD}/Makefile:/code/Makefile
+      - ${PWD}/run_tests.sh:/code/run_tests.sh

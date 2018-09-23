@@ -12,5 +12,6 @@ function usage {
 #docker rm bigram_suggest_test 2>/dev/null
 #docker run -it --name py_word_suggest_test --rm -v $(pwd)/:/code py_word_suggest py.test tests
 #docker run -it --name py_word_suggest_test --rm -v $(pwd)/:/code py_word_suggest nosetests tests -v
-python3 -m pytest -vv "$SCRIPT_DIR//tests"
+make clean
+python -m pytest -vv "$SCRIPT_DIR//tests"
 # nosetests -vv "$SCRIPT_DIR/app/tests"
