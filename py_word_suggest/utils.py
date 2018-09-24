@@ -50,34 +50,44 @@ def load_data_from_json(filename):
     except Exception as e:
         print(e)
 
-def grep_bigram_from_system(pattern, filename, stripl=b'', stripr=b',\n'):
-    """grep_bigram_from_system: Check if pattern exists in a file, using gnu_grep
-    :pattern: str, pattern to find 
-    :filename: file
-    :stripl: bytes, strip output starting at the left
-    :stripr: bytes, strip output starting at the right
-    :returns: str/exception/False
-
+def grep_jsonstring_from_system(key, filename):
+    """grep_jsonstring_from_system: Get json string from json file, using jq ***JQ IS REQUIRED ON SYSTEM ***
+    :key: str, key  to find 
+    :filename: file, json
+    :returns: dict/null
     """
-    grep = Popen(['grep', pattern, filename], stdout=PIPE, stderr=PIPE)
-    pat, err = grep.communicate()
+    #Replace qoutes by double 
+    if isinstance(key, str):
+       if(key.startswith('"') and key.endswith('"')):
+           pass
+       else: raise utilsError("Error, grep_jsonstring_from_system: '{}' needs to be a str type and need to be between double quotes.".format(key)) #end check double quotes
+    else:
+        raise utilsError("Error, grep_jsonstring_from_system: '{}' needs to be a str type and need to be between double quotes.".format(key))
+      
+    ###############file check
+    cmd = "cat {} | jq -jc '.{}'".format(filename,key)
+    try:
+        with open(filename):
+            jqp = Popen([cmd], stdout=PIPE, stderr=PIPE, shell=True)
+            jqr,err = jqp.communicate()
+    except IOError:
+         raise utilsError("Error, grep_jsonstring_from_system: File {} not exists or is busy.".format(filename))
     #Return if pattern not exists
-    if len(err) is 0 and len(pat) is 0:
+    if len(err) is 0 and jqr.decode() == 'null':
         return False
    #Return error if grep produces an error 
     if len(err) is not 0:
-        raise utilsError("Error, grep_bigram_from_system: {}".format(err))
+        raise utilsError("Error, grep_jsonstring_from_system: {}".format(err))
 
-    #Strip output of grep
-    if isinstance(stripl, bytes):
-        pat = pat.lstrip(stripl)
-    else:
-        raise utilsError("Error, grep_bigram_from_system: {} needs to be a bytes type".format(stripl))
-    if isinstance(stripr, bytes):
-        pat = pat.rstrip(stripr)
-    else:
-        raise utilsError("Error, grep_bigram_from_system: '{}' needs to be a bytes type".format(stripr))
-    return pat
+    # return json object
+    # check key between doubleqoutes 
+    if not key.startswith('"'):
+        key = '"'+key
+    else:pass #startswith
+    if not key.endswith('"'):
+        key = key+'}'
+    else:pass #endswith
+    return loads('{'+'{}:{}'.format(key, jqr.decode())+'}')
 
 def load_json_string(jsonString):
     """load_json_string: Load json  object from string
@@ -98,7 +108,7 @@ def load_json_string(jsonString):
     # else:pass
 
     if not hasBraces:
-            raise utilsError("Error load_json_string, jsonString, '{k}' needs to be string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.".format(k=jsonString))
+            raise utilsError("Error load_json_string, jsonString, '{k}' needs to be a string represetation of a json object, jsonString needs to be set between braces. A str item needs to be set between double quotes.".format(k=jsonString))
     # else:pass 
     
     if not isinstance(jsonString, str) and not isinstance(jsonString, bytes):
