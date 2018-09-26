@@ -1,12 +1,6 @@
-language: python
-python:
-  - "3.6.6"
+language: minimal
 sudo: false
 services: 
   - docker
-# command to install dependencies
-install: "pip install -r dockerfile/requirements.txt"
-# command to run tests
-# script: bash ./run_tests.sh 
 script:
   - make pytest
