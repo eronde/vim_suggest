@@ -27,8 +27,8 @@ class decorationsTest(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             _function_with_arg('bla', '')
         error = str(e.exception)
-        pat ="^Error in '_function_with_arg': One of the given arguments .*\'bla', ''\)' are empty\.$"
+        pat =r"^Error in '_function_with_arg': One of the given arguments .*\'bla', ''\)' are empty\.$"
         regex = re.search(pat, error)
-        assert regex is not None, "'{e}' should be: ^Error in '_function_with_arg': One of the given arguments .*\'bla', ''\)' are empty\.$".format(e=pat)
+        assert regex is not None, r"'{e}' should be: ^Error in '_function_with_arg': One of the given arguments .*\'bla', ''\)' are empty\.$".format(e=pat)
 if __name__ == '__main__':
     unittest.main()
