@@ -73,10 +73,10 @@ def grep_jsonstring_from_system(key, filename):
     except IOError:
          raise utilsError("Error, grep_jsonstring_from_system: File {} not exists or is busy.".format(filename))
     #Return if pattern not exists
-    if len(err) is 0 and jqr.decode() == 'null':
+    if len(err) == 0 and jqr.decode() == 'null':
         return False
    #Return error if grep produces an error 
-    if len(err) is not 0:
+    if len(err) != 0:
         raise utilsError("Error, grep_jsonstring_from_system: {}".format(err))
 
     # return json object
