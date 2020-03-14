@@ -9,6 +9,11 @@ Py_word_suggest is a python library which returns suggested words of a given wor
 python3 -m  pip install -r dockerfile/requirements.txt
 python3 setup.py install
 ````
+- With pipenv:
+````
+pipenv install -e .
+pipenv shell
+````
 
 # Example
 Redis:
