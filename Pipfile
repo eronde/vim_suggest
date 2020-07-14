@@ -9,7 +9,7 @@ pytest-cov = "*"
 fakeredis = "==0.7.0"
 nose = "*"
 pudb = "*"
-pytest = "==3.8.0"
+pytest = "*"
 
 [packages]
 redis = "==2.7.6"
