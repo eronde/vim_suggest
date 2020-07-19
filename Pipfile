@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+ipython = "*"
+pytest-cov = "*"
+fakeredis = "==0.7.0"
+nose = "*"
+pudb = "*"
+pytest = "*"
+
+[packages]
+redis = "==2.7.6"
+wrapt = "==1.10.8"
+docopt = "==0.6.2"
+py-word-suggest = {editable = true,path = "."}
+
+[requires]
+python_version = "3.8"
