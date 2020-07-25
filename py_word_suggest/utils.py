@@ -49,9 +49,12 @@ def is_iterable(obj):
 
 def load_data_from_json(filename):
     """load_data_from_json: Load data from json file
-    :obj:
+    :filename: str
     :returns: dict
     """
+    if not isinstance(filename, str):
+        raise ValueError(
+            "Error, load_data_from_json: Function recuires a filename (str).")
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             try:

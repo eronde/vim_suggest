@@ -141,31 +141,46 @@ def test_containing(testInput, collection,  expectedOutput, errorState):
         assert str(e.value) == expectedOutput
 
 
-@pytest.mark.parametrize("expectedOutput, state",
+@pytest.mark.parametrize("testInput, expectedOutput, state",
                          [
-                             ({"lang:nl:0:ben": [["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]], "lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], [
+                             (None, {"lang:nl:0:ben": [["ik", 22.0], ["er", 8.0], ["een", 7.0], ["je", 5.0]], "lang:nl:0:Ik":[["heb", 66.0], ["ben", 52.0], ["denk", 15.0], [
                                  "wil", 13.0], ["acht", 1.0]], "lang:eng:0:I":[["am", 100], ["want", 246], ["love", 999]], "lang:eng:0:am":[["the", 100], ["Alice", 50], ["Bob", 45]]}, 'normalState'),
-                             ("Error, load_data_from_json: \'NOEXISTINGFILE\' does not exists.",
+                             (None, "Error, load_data_from_json: \'NOEXISTINGFILE\' does not exists.",
                               'noFileExistState'),
-                             ("Error, load_data_from_json: '{}' needs to be a json object.",
+                             (None, "Error, load_data_from_json: '{}' needs to be a json object.",
                               'invalidJsonState'),
+                             (None, "Error, load_data_from_json: Function recuires a filename (str).",
+                              'ValueErrorState'),
+                             (13458, "Error, load_data_from_json: Function recuires a filename (str).",
+                              'ValueErrorState'),
+                             (True, "Error, load_data_from_json: Function recuires a filename (str).",
+                              'ValueErrorState'),
+                             (False, "Error, load_data_from_json: Function recuires a filename (str).",
+                              'ValueErrorState'),
 
                          ]
                          )
-def test_load_json_from_file(raw_json_file, invalid_json_file, expectedOutput, state):
+def test_load_json_from_file(raw_json_file, invalid_json_file, testInput, expectedOutput, state):
     """utils, load json data from file"""
     # Test default argument
+    # Test normal behavior
+    if state == 'normalState':
+        assert load_data_from_json(str(raw_json_file)) == expectedOutput
+    # Test noFileExistState
     if state == 'noFileExistState':
         raw_json_file = 'NOEXISTINGFILE'
         with pytest.raises(FileNotFoundError) as e:
             load_data_from_json(raw_json_file)
         assert str(e.value) == expectedOutput
-    # Test normal behavior
-    if state == 'normalState':
-        assert load_data_from_json(raw_json_file) == expectedOutput
 
     # Test invalid_json_file error
     if state == 'invalidJsonState':
         with pytest.raises(utilsError) as e:
             load_data_from_json(str(invalid_json_file))
         assert str(e.value) == expectedOutput.format(str(invalid_json_file))
+
+    # Test noFileExistState
+    if state == 'ValueErrorState':
+        with pytest.raises(ValueError) as e:
+            load_data_from_json(testInput)
+        assert str(e.value) == expectedOutput
